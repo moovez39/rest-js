@@ -33,7 +33,7 @@ public class User implements UserDetails {
 
     @Column(unique = true)
     @Email(message = "Email is invalid")
-    @NotBlank(message = "Email shouldn't be empty")
+//    @NotBlank(message = "Email shouldn't be empty")
     private String email;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})

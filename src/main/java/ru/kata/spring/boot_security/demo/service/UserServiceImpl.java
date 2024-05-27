@@ -82,6 +82,10 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    public void deleteUser(User user){
+        userRepository.delete(user);
+    }
+
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }
@@ -94,7 +98,15 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll();
     }
 
+    @Override
+    public User findUserByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+
     public void saveAllUsers(List<User> users) {
         userRepository.saveAll(users);
+    }
+    public void deleteAllUsers(List<User> users){
+        userRepository.deleteAll(users);
     }
 }

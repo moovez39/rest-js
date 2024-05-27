@@ -14,6 +14,7 @@ import ru.kata.spring.boot_security.demo.repositories.UserRepository;
 import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -23,20 +24,21 @@ public class AdminController {
     private final RoleRepository roleRepo;
 
     @Autowired
-    public AdminController(UserServiceImpl userService, UserRepository userRepository, RoleRepository roleRepo) {
+    public AdminController(UserServiceImpl userService, RoleRepository roleRepo) {
         this.userService = userService;
         this.roleRepo = roleRepo;
     }
 
 
     @GetMapping("/")
-    public String adminPage(Model model) {
+    public String adminPage(Model model, Principal principal) {
+        model.addAttribute("authorizedUser",userService.findUserByUsername(principal.getName()));
         model.addAttribute("users", userService.getAllUsers());
         model.addAttribute("roles", roleRepo.findAll());
         model.addAttribute("new_user", new User());
         model.addAttribute("usersForm", new UserEditDTO(userService.getAllUsers()));
-        UserEditDTO users = (UserEditDTO)model.getAttribute("usersForm");
-        System.out.println(users.getUsers());
+//        UserEditDTO users = (UserEditDTO)model.getAttribute("usersForm");
+//        System.out.println(users.getUsers());
 
         return "admin/test";
     }
@@ -59,7 +61,7 @@ public class AdminController {
     }
 
     @PostMapping("/edit_user")
-    public String editUser( User editedUser, Model model, @ModelAttribute UserEditDTO userEditDTO) {
+    public String editUser( Model model, @ModelAttribute UserEditDTO userEditDTO) {
         userService.saveAllUsers(userEditDTO.getUsers());
         model.addAttribute("roles", roleRepo.findAll());
 //        userService.saveUser(editedUser);
@@ -67,9 +69,13 @@ public class AdminController {
 
     }
 
-    @PostMapping("/remove_user/{id}")
-    public String removeUser(@ModelAttribute("user") User user, @PathVariable Long id) {
-        userService.deleteUser(id);
+//    @PostMapping("/remove_user/{id}")
+//    public String removeUser(@ModelAttribute("user") User user, @PathVariable Long id) {
+//        userService.deleteUser(id);
+//        return "redirect:/admin/";
+    @PostMapping("/remove_user")
+    public String removeUser(@ModelAttribute UserEditDTO userEditDTO) {
+        userService.deleteAllUsers(userEditDTO.getUsers());
         return "redirect:/admin/";
     }
 
