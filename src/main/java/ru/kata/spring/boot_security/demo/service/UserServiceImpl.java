@@ -56,14 +56,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        if (username.equals(adminUsername)) {
-            return org.springframework.security.core.userdetails.User.builder().username(adminUsername)
-                    .password(passwordEncoder.encode(adminPassword)).roles(adminRole).build();
-        }
-        return userRepository.findByUsername(username);
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return userRepository.findByEmail(email);
     }
-
 
     public void saveUser(User user) {
         Optional<User> userFromDB = userRepository.findById(user.getId());

@@ -34,6 +34,13 @@ public class UserController {
         return "/user";
 
     }
+//    @GetMapping("/")
+//    public String loginPage(Model model) {
+////        User user = userRepository.findByUsername(principal.getName());
+////        model.addAttribute("user", user);
+//        return "/admin/test";
+//
+//    }
 
     @GetMapping("/registration")
     public String registerUser(Model model) {

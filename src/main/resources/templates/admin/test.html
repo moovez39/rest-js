@@ -11,19 +11,24 @@
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
 <!--Верхняя навигационная панель-->
-<th:block th:object="${authorizedUser}">
+<div th:object="${authorizedUser}">
 <nav class="navbar sticky-top navbar-light bg-dark">
-    <div class="container-fluid">
-        <p class="text-white text-center fw-bold"  th:text="*{email+' with roles '+roles}"></p>
-        <a class="" href="/logout">Logout</a>
+    <div class="container-fluid text-white">
+        <div>
+            <a class="fw-bold text-white text-decoration-none" th:text="*{email}" ></a>
+            <a th:text="*{' with roles ' +roles}" style="margin: auto"></a>
+        </div>
+        <a class="text-decoration-none text-secondary" href="/logout">Logout</a>
     </div>
+
 </nav>
-</th:block>
+</div>
 
 <!--Боковой навбар-->
 <div class="d-flex h-100 align-items-start row-cols-6 bg-white ">
     <br>
     <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+        <br>
         <a class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" href="#v-pills-home" role="tab"
            aria-controls="v-pills-home" aria-selected="true">Admin</a>
         <a class="nav-link" id="v-pills-profile-tab" data-bs-toggle="pill" href="#v-pills-profile" role="tab"
