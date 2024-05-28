@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/html" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns="http://www.w3.org/1999/html" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
@@ -12,16 +13,16 @@
         crossorigin="anonymous"></script>
 <!--Верхняя навигационная панель-->
 <div th:object="${authorizedUser}">
-<nav class="navbar sticky-top navbar-light bg-dark">
-    <div class="container-fluid text-white">
-        <div>
-            <a class="fw-bold text-white text-decoration-none" th:text="*{email}" ></a>
-            <a th:text="*{' with roles ' +roles}" style="margin: auto"></a>
+    <nav class="navbar sticky-top navbar-light bg-dark">
+        <div class="container-fluid text-white">
+            <div>
+                <a class="fw-bold text-white text-decoration-none" th:text="*{email}"></a>
+                <a th:text="*{' with roles ' +roles}" style="margin: auto"></a>
+            </div>
+            <a class="text-decoration-none text-secondary" href="/logout">Logout</a>
         </div>
-        <a class="text-decoration-none text-secondary" href="/logout">Logout</a>
-    </div>
 
-</nav>
+    </nav>
 </div>
 
 <!--Боковой навбар-->
@@ -29,14 +30,18 @@
     <br>
     <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
         <br>
-        <a class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" href="#v-pills-home" role="tab"
-           aria-controls="v-pills-home" aria-selected="true">Admin</a>
-        <a class="nav-link" id="v-pills-profile-tab" data-bs-toggle="pill" href="#v-pills-profile" role="tab"
-           aria-controls="v-pills-profile" aria-selected="false">User</a>
+        <ul class="list-group">
+            <li><a sec:authorize="hasRole('ROLE_ADMIN')" class="nav-link active" id="v-pills-home-tab"
+                            data-bs-toggle="pill" href="#v-pills-home" role="tab"
+                            aria-controls="v-pills-home" aria-selected="false">Admin</a></li>
+            <li><a class="nav-link" id="v-pills-profile-tab" data-bs-toggle="pill" href="#v-pills-profile"
+                            role="tab"
+                            aria-controls="v-pills-profile" aria-selected="true">User</a></li>
+        </ul>
     </div>
 
     <div class="tab-content flex-fill  container-fluid bg-light " id="v-pills-tabContent" style="height: 100vh">
-        <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel"
+        <div sec:authorize="hasRole('ROLE_ADMIN')" class="tab-pane fade show active" id="v-pills-home" role="tabpanel"
              aria-labelledby="v-pills-home-tab">
             <h1>Admin panel</h1>
             <!--            навбар админ панели-->
@@ -99,9 +104,10 @@
                     <!--           конец таблицы         -->
                 </div>
                 <!--                New user form-->
-                <div class="tab-pane fade flex-fill" id="nav-profile" role="tabpanel"
+                <div sec:authorize="hasRole('ROLE_ADMIN')" class="tab-pane fade flex-fill" id="nav-profile"
+                     role="tabpanel"
                      aria-labelledby="nav-profile-tab">
-                    <form th:action="@{create_user}" method="POST" th:object="${new_user}">'delete_user'+ user.id
+                    <form th:action="@{create_user}" method="POST" th:object="${new_user}">
                         <ul class="list-group ">
                             <li class="list-group-item bg-light">
                                 <h4 class="active bg-l">Add new User</h4>
@@ -158,14 +164,49 @@
             </div>
 
         </div>
-        <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+        <!--        user info navtab-->
+        <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab"
+             th:object="${authorizedUser}">
             <h1>User info</h1>
+            <ul class="list-group ">
+                <li class="list-group-item bg-light"><h3>All Users</h3></li>
+
+                <li class="list-group-item">
+                    <hr/>
+                    <table class="table table-striped flex-fill align-content-center">
+                        <thead>
+
+                        <tr>
+                            <th scope="row">ID</th>
+                            <th scope="col">Username</th>
+                            <th scope="col">Password</th>
+                            <th scope="col">Sex</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Roles</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <!--                                    <th scope="row">1</th>-->
+                            <td th:text="*{id}"></td>
+                            <td th:text="*{username}"></td>
+                            <td th:text="*{password}"></td>
+                            <td th:text="*{sex}"></td>
+                            <td th:text="*{email}"></td>
+                            <td th:text="*{roles}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </li>
+            </ul>
+
+            <!--           конец таблицы         -->
         </div>
     </div>
 </div>
 
 <!--Модальное окно изменения юзера-->
-<form th:action="@{edit_user}" method="post" th:object="${usersForm}">
+<form th:action="@{edit_user}" method="post" th:object="${usersForm}" sec:authorize="hasRole('ROLE_ADMIN')">
 
     <th:block th:each="user,itemStat : *{users}">
         <div class="modal" th:id="${'edit_user'+ user.id}" tabindex="-1">
@@ -220,7 +261,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary" data-bs-toggle="#">Save changes</button>
+                        <button type="submit" class="btn btn-primary" data-bs-toggle="#">Edit</button>
                     </div>
                 </div>
             </div>
@@ -229,7 +270,7 @@
 </form>
 
 <!--    модальная форма удаления пользователя-->
-<th:block th:each="user,itemStat : *{users}">
+<th:block th:each="user,itemStat : *{users}" sec:authorize="hasRole('ROLE_ADMIN')">
     <form th:action="@{remove_user}" method="post" th:object="${usersForm}">
         <div class="modal" th:id="${'delete_user'+ user.id}" tabindex="-1">
             <div class="modal-dialog modal-dialog-centered">

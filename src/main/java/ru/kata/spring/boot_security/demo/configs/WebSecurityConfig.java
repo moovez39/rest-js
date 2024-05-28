@@ -29,17 +29,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
+                .formLogin().usernameParameter("email").passwordParameter("password").loginPage("/login").successHandler(successUserHandler)
+                .permitAll()
+                .and()
+                .logout()
+                .permitAll()
+                .and()
                 .authorizeRequests()
                 .antMatchers("/registration").not().fullyAuthenticated()
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/", "/index").permitAll()
                 .anyRequest().authenticated()
-                .and()
-                .formLogin().usernameParameter("email").passwordParameter("password").loginPage("/login").successHandler(successUserHandler)
-                .permitAll()
-                .and()
-                .logout()
-                .permitAll();
+                .and();
+
     }
     @Bean
     public static BCryptPasswordEncoder passwordEncoder() {

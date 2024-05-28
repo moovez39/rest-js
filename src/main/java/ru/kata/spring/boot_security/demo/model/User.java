@@ -20,20 +20,15 @@ public class User implements UserDetails {
     private long id;
 
     @Column(unique = true)
-    @Size(min = 5, max = 32, message = "username should be from 5 to 32 symbols")
     private String username;
 
     @Column
-//    @Size(min = 6, max = 64, message = "Password should contains at least 6 characters")
     private String password;
 
     @Column(nullable = false)
-    @NotNull(message = "You should choose your sex")
     private char sex;
 
     @Column(unique = true)
-    @Email(message = "Email is invalid")
-//    @NotBlank(message = "Email shouldn't be empty")
     private String email;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
