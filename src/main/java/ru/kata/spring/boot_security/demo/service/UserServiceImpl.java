@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.kata.spring.boot_security.demo.dto.UserDTO;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
@@ -64,7 +65,7 @@ public class UserServiceImpl implements UserService {
         Optional<User> userFromDB = userRepository.findById(user.getId());
         if (userFromDB.isEmpty()) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
-            user.addRole(roleRepository.getById(1L));
+//            user.addRole(roleRepository.findById(1L).get());
             userRepository.save(user);
         } else {
             if (userFromDB.get().getPassword().equals(user.getPassword())) {
@@ -77,7 +78,11 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    public void deleteUser(User user){
+    public User findById(Long id) {
+        return userRepository.findById(id).get();
+    }
+
+    public void deleteUser(User user) {
         userRepository.delete(user);
     }
 
@@ -101,7 +106,13 @@ public class UserServiceImpl implements UserService {
     public void saveAllUsers(List<User> users) {
         userRepository.saveAll(users);
     }
-    public void deleteAllUsers(List<User> users){
+
+    public void deleteAllUsers(List<User> users) {
         userRepository.deleteAll(users);
+    }
+
+    public User converToUser(UserDTO userDTO) {
+        return new User(userDTO.getUsername(), userDTO.getPassword(), userDTO.getSex(), userDTO.getEmail(),
+                userDTO.getRoles());
     }
 }

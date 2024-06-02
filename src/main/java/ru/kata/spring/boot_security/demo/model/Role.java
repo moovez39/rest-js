@@ -4,21 +4,25 @@ import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 
 @Entity
 @Table(name = "role")
-public class Role implements GrantedAuthority {
 
+public class Role implements GrantedAuthority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id;
+
 
     @Column(unique = true)
     @NotNull
     String roleName;
 
 
+    @ManyToMany(mappedBy = "roles", cascade = CascadeType.MERGE)
+    private List<User> users;
     public Role(String role_name) {
         this.roleName = role_name;
     }

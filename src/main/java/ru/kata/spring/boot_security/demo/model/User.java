@@ -31,13 +31,12 @@ public class User implements UserDetails {
     @Column(unique = true)
     private String email;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
-    public User(long id, String username, String password, char sex, String email, Set<Role> roles) {
-        this.id = id;
+    public User( String username, String password, char sex, String email, Set<Role> roles) {
         this.username = username;
         this.password = password;
         this.sex = sex;
