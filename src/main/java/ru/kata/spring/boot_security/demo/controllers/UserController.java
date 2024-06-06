@@ -25,10 +25,14 @@ public class UserController {
     }
 
     @GetMapping("/user")
-    public String user(Model model, Principal principal) {
-        model.addAttribute("authorizedUser", userService.findUserByUsername(principal.getName()));
+    public String user() {
         return "view/user";
 
+    }
+
+    @GetMapping("")
+    public String loginView(){
+        return "view/login";
     }
 
 

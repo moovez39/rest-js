@@ -2,16 +2,14 @@ const api = 'http://localhost:8080/api/user'
 
 async function getUsers(url) {
     const data = await fetch(url).then(response => response.json())
-    // console.log(data)
     modals(data)
     userTable(data)
 }
 
-getUsers(api)
 
 function userTable(json) {
     json.forEach(user => $('#user_table').append(
-        `<tr id="user${user.id}"}>
+        `<tr id="user${user.id}">
         <td>${user['id']}</td>
         <td>${user['username']}</td>
         <td>${user['password']}</td>
@@ -27,7 +25,9 @@ function userTable(json) {
 function modals(json) {
     for (let user of json) {
         $('body').append(
-            `<div class="modal" id="edit-modal${user.id}" tabindex="-1">
+            `
+<form name="edit${user.id}">
+<div class="modal" id="edit-modal${user.id}" tabindex="-1">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -75,7 +75,8 @@ function modals(json) {
                     </div>
                 </div>
             </div>
-        </div>`)
+        </div>
+</form>`)
         if (user.sex === "m") {
             $(document).ready(function () {
                 $(`input[name="sex${user.id}"][value="m"]`).prop('checked', true);
@@ -100,7 +101,9 @@ function modals(json) {
             }
         })
         $('body').append(
-            `<div class="modal" id="delete-modal${user.id}" tabindex="-1">
+            `
+        <form name="delete${user.id}">
+           <div class="modal" id="delete-modal${user.id}" tabindex="-1">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -149,7 +152,9 @@ function modals(json) {
                     
                 </div>
             </div>
-        </div>`)
+        </div>
+        </form>
+        `)
         if (user.sex === "m") {
             $(document).ready(function () {
                 $(`input[name="sex-delete${user.id}"][value="m"]`).prop('checked', true);
@@ -173,23 +178,21 @@ function modals(json) {
                 })
             }
         })
-        const deleteButton = $('#delete-submit'+user.id)
+        const deleteButton = $('#delete-submit' + user.id)
         deleteButton.attr('onClick', 'deleteUser(' + user.id + ');')
-        const editButton = $('#edit-submit'+user.id)
+        const editButton = $('#edit-submit' + user.id)
         editButton.attr('onClick', 'editUser(' + user.id + ')')
     }
 }
 
-function deleteUser(id){
-    fetch(`http://localhost:8080/api/user/${id}`,{method: 'DELETE'})
-    $('#user'+id).remove()
+function deleteUser(id) {
+    fetch(`http://localhost:8080/api/user/${id}`, {method: 'DELETE'})
 }
 
-function editUser(id){
+function editUser(id) {
     let headers = new Headers();
-    const rolesOption = document.getElementById("roles"+id)
-    const sexOptions = document.getElementById("sex"+id)
-    // console.log(rolesOption)
+    const rolesOption = document.getElementById("roles" + id)
+    const sexOptions = document.getElementById("sex" + id)
     let selectedRoles = [];
     for (const rolesSelect of rolesOption) {
         if (rolesSelect.selected) {
@@ -202,25 +205,25 @@ function editUser(id){
     let selectedSex = document.querySelector(`input[type="radio"][name="sex${id}"]:checked`);
     console.log(selectedSex)
     headers.append('Content-Type', 'application/json; charset=utf-8');
-            let userEdit = {
-                'id': ($('#id'+id).val()),
-                'username': $('#username'+id).val(),
-                'password': $('#password'+id).val(),
-                'sex': selectedSex.value,
-                'email': $('#email'+id).val(),
-                'roles':selectedRoles
-            }
+    let userEdit = {
+        'id': ($('#id' + id).val()),
+        'username': $('#username' + id).val(),
+        'password': $('#password' + id).val(),
+        'sex': selectedSex.value,
+        'email': $('#email' + id).val(),
+        'roles': selectedRoles
+    }
 
-        let request = new Request('http://localhost:8080/api/user', {
-            method: 'PUT',
-            headers: headers,
-            body: JSON.stringify(userEdit)
-        });
-        fetch(request).then(response =>(response.json()).then(result => console.log(result)))
+    let request = new Request('http://localhost:8080/api/user', {
+        method: 'PUT',
+        headers: headers,
+        body: JSON.stringify(userEdit)
+    });
+    fetch(request).then(response => (response.json()).then(result => console.log(result)))
 
 }
 
-function createUser(){
+function createUser() {
     let headers = new Headers();
     const rolesOption = document.getElementById("roles-create")
     let selectedRoles = [];
@@ -240,7 +243,7 @@ function createUser(){
         'password': $('#password-create').val(),
         'sex': selectedSex.value,
         'email': $('#email-create').val(),
-        'roles':selectedRoles
+        'roles': selectedRoles
     }
 
     let request = new Request('http://localhost:8080/api/user', {
@@ -248,11 +251,27 @@ function createUser(){
         headers: headers,
         body: JSON.stringify(userEdit)
     });
-    fetch(request).then(response =>(response.json()).then(result => console.log(result)))
+    fetch(request).then(response => (response.json()).then(result => console.log(result)))
 }
 
 const newUser = $('#create-user')
 newUser.attr('onClick', 'createUser()')
-// $(document).ready()
 
-// $(document).ready(console.log(document.getElementById("#roles41")))
+
+function updateData() {
+    fetch(api).then(response => response.json()).then(data => {
+        $('#user_table').empty()
+        document.querySelectorAll('.modal').forEach(el => el.remove())
+        userTable(data)
+        modals(data)
+
+    })
+}
+
+document.getElementById("nav-home-tab").addEventListener('click',updateData)
+document.addEventListener('submit',updateData)
+const forms = document.forms
+console.log(forms)
+for(let form of forms)
+    console.log(form)
+getUsers(api)

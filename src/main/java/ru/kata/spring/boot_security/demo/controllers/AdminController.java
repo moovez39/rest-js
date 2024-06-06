@@ -26,35 +26,8 @@ public class AdminController {
 
 
     @GetMapping("")
-    public String adminPage(Model model, Principal principal) {
-        model.addAttribute("authorizedUser",userService.findUserByUsername(principal.getName()));
-        model.addAttribute("users", userService.getAllUsers());
-        model.addAttribute("roles", roleRepo.findAll());
-        model.addAttribute("new_user", new User());
-        model.addAttribute("usersForm", new UserEditDTO(userService.getAllUsers()));
-
+    public String adminPage() {
         return "view/admin";
     }
 
-
-    @PostMapping("/edit_user")
-    public String editUser( Model model, @ModelAttribute UserEditDTO userEditDTO) {
-        userService.saveAllUsers(userEditDTO.getUsers());
-        model.addAttribute("roles", roleRepo.findAll());
-        return "redirect:/admin/";
-
-    }
-
-    @PostMapping("/remove_user")
-    public String removeUser(@ModelAttribute UserEditDTO userEditDTO) {
-        userService.deleteAllUsers(userEditDTO.getUsers());
-        return "redirect:/admin/";
-    }
-
-    @PostMapping("/create_user")
-    public String createUser(@ModelAttribute("user") User user) {
-        userService.saveUser(user);
-        System.out.println(user);
-        return "redirect:/admin/";
-    }
 }

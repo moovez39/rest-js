@@ -3,7 +3,6 @@ package ru.kata.spring.boot_security.demo.service;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import ru.kata.spring.boot_security.demo.dto.UserDTO;
 import ru.kata.spring.boot_security.demo.model.User;
 
 import java.util.List;
@@ -19,5 +18,4 @@ public interface UserService extends UserDetailsService {
     List<User> getAllUsers();
     User findUserByUsername(String username);
     User findById(Long id);
-    User converToUser(UserDTO userDTO);
 }
