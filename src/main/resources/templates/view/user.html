@@ -12,12 +12,13 @@
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
 <!--Верхняя навигационная панель-->
-<div th:object="${authorizedUser}">
+<div>
     <nav class="navbar sticky-top navbar-light bg-dark">
         <div class="container-fluid text-white">
             <div>
-                <a class="fw-bold text-white text-decoration-none" th:text="*{email}"></a>
-                <a th:text="*{' with roles ' +roles}" style="margin: auto"></a>
+                <a class="fw-bold text-white text-decoration-none" id="email-header"></a>
+                <a>with roles</a>
+                <a id="roles-header" style="margin: auto"></a>
             </div>
             <a class="text-decoration-none text-secondary" href="/logout">Logout</a>
         </div>
@@ -40,8 +41,7 @@
 
         <!--        user info navtab-->
     <div class="tab-content flex-fill  container-fluid bg-light " id="v-pills-tabContent" style="height: 100vh">
-        <div class="tab-pane fade show active" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab"
-             th:object="${authorizedUser}">
+        <div class="tab-pane fade show active" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
             <h1>User info</h1>
             <ul class="list-group">
                 <li class="list-group-item bg-light"><h3>About user</h3></li>
@@ -60,15 +60,9 @@
                             <th scope="col">Roles</th>
                         </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="user-info">
                         <tr>
                             <!--                                    <th scope="row">1</th>-->
-                            <td th:text="*{id}"></td>
-                            <td th:text="*{username}"></td>
-                            <td th:text="*{password}"></td>
-                            <td th:text="*{sex}"></td>
-                            <td th:text="*{email}"></td>
-                            <td th:text="*{roles}"></td>
                         </tr>
                         </tbody>
                     </table>
@@ -79,6 +73,7 @@
         </div>
     </div>
 </div>
+<script src="/static/js/header.js"></script>
 
 </body>
 </html>

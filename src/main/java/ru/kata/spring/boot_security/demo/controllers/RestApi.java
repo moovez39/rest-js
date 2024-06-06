@@ -7,9 +7,11 @@ import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.dto.UserDTO;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
+import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 import javax.print.DocFlavor;
+import java.security.Principal;
 import java.util.List;
 import java.util.Set;
 
@@ -18,10 +20,19 @@ import java.util.Set;
 public class RestApi {
 
     private final UserService userService;
+    private final RoleService roleService;
+
 
     @Autowired
-    RestApi(UserService userService){
+    RestApi(UserService userService, RoleService roleService){
         this.userService = userService;
+        this.roleService = roleService;
+    }
+
+    @GetMapping("/user/role")
+    public ResponseEntity<List<Role>> getRoles(){
+        List<Role> roles = roleService.getRoles();
+        return ResponseEntity.ok(roles);
     }
 
     @GetMapping("/user")
@@ -52,5 +63,11 @@ public class RestApi {
     public ResponseEntity<User> editUser(@RequestBody User user){
         userService.saveUser(user);
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(user);
+    }
+
+    @GetMapping("/user/info")
+    public ResponseEntity<User> getUserInfo(Principal principal){
+        User user = userService.findUserByUsername(principal.getName());
+        return ResponseEntity.ok(user);
     }
 }
