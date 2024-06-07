@@ -3,6 +3,8 @@ package ru.kata.spring.boot_security.demo.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
@@ -62,8 +64,8 @@ public class RestApi {
     }
 
     @GetMapping("/user/info")
-    public ResponseEntity<User> getUserInfo(Principal principal){
-        User user = userService.findUserByUsername(principal.getName());
+    public ResponseEntity<User> getUserInfo(Authentication authentication ){
+        User user = userService.findUserByUsername(authentication.getName());
         return ResponseEntity.ok(user);
     }
 }
